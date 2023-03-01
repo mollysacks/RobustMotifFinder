@@ -32,9 +32,9 @@ def Robustness(S, Motifs):
     return robustness
 
 def Recognizes(s, motif):
-    k, P_n1, P_c2 = motif
+    k, P_n2, P_c1 = motif
     for i in range(len(s) - k + 1):
-        if (s[i] == P_n1) and (s[i + k - 1] == P_c2):
+        if (s[i+1] == P_n2) and (s[i + k - 1] == P_c1):
             return 1
     return 0
 
