@@ -9,6 +9,7 @@ def ReportRuntime(f):
             return *output, t1-t0
         else:
             return t1-t0
+    g.__name__ = f.__name__
     return g
 
 @ReportRuntime
