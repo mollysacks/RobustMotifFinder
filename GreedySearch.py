@@ -74,28 +74,30 @@ def SimpleGreedySearch(tmp_S, tmp_all_motifs):
 
 @ReportRuntime
 def DoubledGreedySearch(tmp_S, tmp_all_motifs):
-    S, all_motifs = 2*deepcopy(tmp_S), deepcopy(tmp_all_motifs)
+    S, all_motifs = deepcopy(tmp_S), deepcopy(tmp_all_motifs)
     motif_set, motif_scores = [], []
 
+    recognized = set()
     for _ in range(n):
         best_score, best_motif = 0, None
         for motif in all_motifs:
             score, _ = PeptidesRecognized(S, motif)
             best_score, best_motif = (score, motif) if score > best_score else (best_score, best_motif)
-
+        
         motif_set += [best_motif]
         motif_scores += [best_score]
 
         all_motifs.remove(best_motif)
         _, recognition_vector = PeptidesRecognized(S, best_motif)
-        deleted = set()
 
         S2 = []
         for i in range(len(S)):
-            if (not recognition_vector[i]) or (S[i] in deleted):
+            if not recognition_vector[i]: # not recognized by current motif
                 S2.append(S[i])
-            else:
-                deleted.add(S[i])
+            elif (recognition_vector[i]) & (S[i] not in recognized): # first recognition
+                recognized.add(S[i])
+                S2.append(S[i])
+            # (recognition_vector[i]) & (S[i] in recognized) -> second recognition -> remove from S2
         S = S2
 
     robustness = Robustness(tmp_S, motif_set)
