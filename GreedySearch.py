@@ -157,6 +157,6 @@ all_motifs = list(itertools.product(amino_acids, amino_acids))  # Cartesian prod
 all_motifs = [(9, *m) for m in all_motifs]
 
 for f in [SimpleGreedySearch, GreedySearchWithOverlap, DoubledGreedySearch, ScoringGreedySearch]:
-    robustness, motif_set, motif_scores, dt = f(S, all_motifs)
+    (robustness, motif_set, motif_scores), dt = f(S, all_motifs)
     WriteOutputToFile(robustness, motif_set, motif_scores, dt, f.__name__)
     print(f'{f.__name__} DONE')
