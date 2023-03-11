@@ -18,6 +18,7 @@ len_seqs = len(seqs)
 # arguments = (alphabets, num_motifs, num_seqs, num_trials, run_brute_force)
 # alphabet frequency: LAGVESIKRDTPNQFYHMCWXUBZO
 args = OrderedDict({
+    'exp0': ('ALV', 6, 100, 10, True),
     'exp1': ('ALV', 6, 10000, 100, True),
     'exp2': ('LAGV', 6, 5000, 100, False),
     'exp3': ('LAGVES', 6, 5000, 100, False),
