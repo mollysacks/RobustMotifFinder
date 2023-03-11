@@ -17,16 +17,19 @@ class RobustMotifFinder():
     def __call__(self, seqs,
                  algos=['BruteForce', 'SimpleGreedySearch', 'DoubledGreedySearch', 'ScoringGreedySearch', 'GibbsSampling']):
         # recognition matrix
+        ts = time.time()
         self.seqs = seqs
         self.all_motifs = self.GenerateAllPossibleMotifs(self.alphabets, self.num_anchors)
         self.num_seqs = len(self.seqs)
         self.num_all_motifs = len(self.all_motifs)
         self.recognition_matrix = self.GenerateRecognitionMatrix(self.seqs, self.all_motifs)
+        te = time.time()
 
         # results
         run_time_dict = dict()
         robustness_dict = dict()
         motifs_dict = dict()
+        run_time_dict['BuildMatrix'] = te - ts
 
         if 'BruteForce' in algos:
             ts = time.time()
@@ -45,6 +48,12 @@ class RobustMotifFinder():
             robustness_dict['DoubledGreedySearch'], motifs_dict['DoubledGreedySearch'] = self.DoubledGreedySearch()
             te = time.time()
             run_time_dict['DoubledGreedySearch'] = te - ts
+
+        if 'GreedySearchWithOverlap' in algos:
+            ts = time.time()
+            robustness_dict['GreedySearchWithOverlap'], motifs_dict['GreedySearchWithOverlap'] = self.GreedySearchWithOverlap()
+            te = time.time()
+            run_time_dict['GreedySearchWithOverlap'] = te - ts
         
         if 'ScoringGreedySearch' in algos:
             ts = time.time()
@@ -185,6 +194,40 @@ class RobustMotifFinder():
         return robustness, motifs
     
 
+    def GreedySearchWithOverlap(self, p=0.5):
+        # initialization
+        seq_candidate_idxs = list(range(self.num_seqs))
+        motif_candidate_idxs = list(range(self.num_all_motifs))
+
+        # greedy search
+        motif_idx_list = list()
+        for _ in range(self.num_motifs):
+            # choose motif with top score
+            best_motif_idx, best_score = 0, -1
+            for j in motif_candidate_idxs:
+                score = sum([self.recognition_matrix[i][j] for i in seq_candidate_idxs])
+                if score > best_score:
+                    best_score = score
+                    best_motif_idx = j
+            motif_idx_list.append(best_motif_idx)
+
+            # update candidates
+            motif_candidate_idxs.remove(best_motif_idx)
+            new_seq_candidate_idxs = list()
+            for i in seq_candidate_idxs:
+                if self.recognition_matrix[i][best_motif_idx] == 1:
+                    if random.choices([0, 1], [1-p, p])[0] == 0:
+                        new_seq_candidate_idxs.append(i)
+                else:
+                    new_seq_candidate_idxs.append(i)
+
+        # robustness
+        motifs = [self.all_motifs[i] for i in motif_idx_list]
+        robustness = self.Robustness(self.recognition_matrix, motif_idx_list=motif_idx_list)
+        
+        return robustness, motifs
+    
+
     def ScoringGreedySearch(self):
         # initialization
         seq_candidate_idxs = list(range(self.num_seqs))
@@ -234,7 +277,7 @@ class RobustMotifFinder():
             max_idx = scores.index(max_score)
 
             # find the motif with best robustness
-            best_score, best_motif_idx = 0, 0
+            best_motif_idx, best_score = 0, -1
             used_motif_idx_list = motif_idx_list[:max_idx] + motif_idx_list[max_idx+1:]
             for j in range(self.num_all_motifs): # for each motif
                 if j in used_motif_idx_list: # skip used motifs
