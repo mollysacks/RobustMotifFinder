@@ -16,11 +16,12 @@ seqs = json.load(open(seq_file, 'r'))
 len_seqs = len(seqs)
 
 # arguments = (alphabets, num_motifs, num_seqs, num_trials, run_brute_force)
+# alphabet frequency: LAGVESIKRDTPNQFYHMCWXUBZO
 args = OrderedDict({
     'exp1': ('ALV', 6, 10000, 100, True),
-    'exp2': ('ACDEFGHIKLMNPQRSTVWY', 4, 5000, 100, False),
-    'exp3': ('ACDEFGHIKLMNPQRSTVWY', 6, 5000, 100, False),
-    'exp4': ('ACDEFGHIKLMNPQRSTVWY', 8, 5000, 100, False),
+    'exp2': ('LAGV', 6, 5000, 100, False),
+    'exp3': ('LAGVES', 6, 5000, 100, False),
+    'exp4': ('LAGVESIK', 6, 5000, 100, False),
     'exp5': ('ALV', 6, 5000, 100, False),
     'exp6': ('ALV', 6, 10000, 100, False),
     'exp7': ('ALV', 6, 20000, 100, False),
@@ -71,8 +72,16 @@ for exp, arg in args.items():
 
     # log result
     with open('{}/{}/result.txt'.format(outdir, exp), 'w') as f:
+        # setting
+        f.write('Setting')
+        f.write('Alphabets: {}\n'.format(alphabets))
+        f.write('#Motifs: {}\n'.format(num_motifs))
+        f.write('#Seqs: {}\n'.format(num_seqs))
+        f.write('#Trials: {}\n'.format(num_trials))
+        f.write('Algos: {}\n'.format(' '.join(algos)))
+        
         # run time
-        f.write('Run Time\n')
+        f.write('\nRun Time\n')
         build_matrix_time = t_df['BuildMatrix'].mean()
         for algo in algos:
             run_time = build_matrix_time + t_df[algo].mean()
