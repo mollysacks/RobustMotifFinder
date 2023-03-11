@@ -1,11 +1,11 @@
-import os, json
+import sys, os, json
 import pandas as pd
 from collections import OrderedDict, defaultdict
 from tqdm import tqdm
 from utils import *
 
-seq_file = '../../data/proteins.json' # input sequence file
-outdir = '../../result/' # output directory
+seq_file = sys.argv[1] # input sequence file
+outdir = sys.argv[2] # output directory
 
 # create output directory
 if not os.path.isdir(outdir):
