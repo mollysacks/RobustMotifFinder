@@ -18,15 +18,15 @@ len_seqs = len(seqs)
 # arguments = (alphabets, num_motifs, num_seqs, num_trials, run_brute_force)
 # alphabet frequency: LAGVESIKRDTPNQFYHMCWXUBZO
 args = OrderedDict({
-    'exp0': ('ALV', 6, 100, 10, True),
-    'exp1': ('ALV', 6, 10000, 100, True),
-    'exp2': ('LAGV', 6, 5000, 100, False),
-    'exp3': ('LAGVES', 6, 5000, 100, False),
-    'exp4': ('LAGVESIK', 6, 5000, 100, False),
-    'exp5': ('ALV', 6, 5000, 100, False),
-    'exp6': ('ALV', 6, 10000, 100, False),
-    'exp7': ('ALV', 6, 20000, 100, False),
-    'exp8': ('ACDEFGHIKLMNPQRSTVWY', 6, len_seqs, 1, False) # all samples
+    'exp0': ('LAG', 6, 100, 10, True),
+    'exp1': ('LAGV', 6, 5000, 100, True),
+    #'exp2': ('LAGV', 6, 5000, 100, False),
+    #'exp3': ('LAGVES', 6, 5000, 100, False),
+    #'exp4': ('LAGVESIK', 6, 5000, 100, False),
+    'exp5': ('LAG', 6, 5000, 100, False),
+    'exp6': ('LAG', 6, 10000, 100, False),
+    'exp7': ('LAG', 6, 20000, 100, False),
+    #'exp8': ('ACDEFGHIKLMNPQRSTVWY', 6, len_seqs, 1, False) # all samples
 })
 
 # experiments
@@ -74,7 +74,7 @@ for exp, arg in args.items():
     # log result
     with open('{}/{}/result.txt'.format(outdir, exp), 'w') as f:
         # setting
-        f.write('Setting')
+        f.write('[Setting]\n')
         f.write('Alphabets: {}\n'.format(alphabets))
         f.write('#Motifs: {}\n'.format(num_motifs))
         f.write('#Seqs: {}\n'.format(num_seqs))
@@ -82,14 +82,14 @@ for exp, arg in args.items():
         f.write('Algos: {}\n'.format(' '.join(algos)))
         
         # run time
-        f.write('\nRun Time\n')
+        f.write('\n[Run Time]\n')
         build_matrix_time = t_df['BuildMatrix'].mean()
         for algo in algos:
             run_time = build_matrix_time + t_df[algo].mean()
             f.write('{}: {}\n'.format(algo, run_time))
         
         # robustness
-        f.write('\nRobustness\n')
+        f.write('\n[Robustness]\n')
         for algo in algos:
             robustness = r_df[algo].mean()
             f.write('{}: {}\n'.format(algo, robustness))
