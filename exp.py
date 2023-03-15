@@ -20,13 +20,13 @@ len_seqs = len(seqs)
 args = OrderedDict({
     'exp0': ('LAG', 6, 100, 10, True),
     'exp1': ('LAGV', 6, 5000, 100, True),
-    #'exp2': ('LAGV', 6, 5000, 100, False),
-    #'exp3': ('LAGVES', 6, 5000, 100, False),
-    #'exp4': ('LAGVESIK', 6, 5000, 100, False),
+    'exp2': ('LAGV', 6, 5000, 100, False),
+    'exp3': ('LAGVES', 6, 5000, 100, False),
+    'exp4': ('LAGVESIK', 6, 5000, 100, False),
     'exp5': ('LAG', 6, 5000, 100, False),
     'exp6': ('LAG', 6, 10000, 100, False),
     'exp7': ('LAG', 6, 20000, 100, False),
-    #'exp8': ('ACDEFGHIKLMNPQRSTVWY', 6, len_seqs, 1, False) # all samples
+    'exp8': ('ACDEFGHIKLMNPQRSTVWY', 6, len_seqs, 1, False) # all samples
 })
 
 # experiments
